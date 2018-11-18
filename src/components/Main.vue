@@ -1,20 +1,34 @@
 <template>
-  <div>
-    <table>
+  <div class="scoreboard-wrapper">
+    <table class="scoresheet">
       <thead class="header">
         <tr class="scoresheet__row">
-          <th></th>
-          <th v-for="player in players" :key="player.id">
+          <th class="scoresheet__cell scoresheet__cell--player-name"></th>
+          <th v-for="player in players" :key="player.id"
+              class="scoresheet__cell scoresheet__cell--player-name">
             <input type="text" v-model="player.name" class="header__namebox"/>
           </th>
-          <th><a @click="addPlayer" class="button--add-player">+</a></th>
-          <th><a @click="addPlayer" class="button--save">Save</a></th>
+          <th v-if="players.length < 8"><a @click="addPlayer" class="button--add-player">+ Add player</a></th>
+          <!-- <th><a @click="addPlayer" class="button--save">Save</a></th> -->
         </tr>
       </thead>
       <tbody class="scoresheet">
-        <tr v-for="scoreType in Object.keys(defaultScore)" :key="scoreType" class="scoresheet__row">
-          <td class="scoresheet__cell--first">{{ scoreType }}</td>
-          <td v-for="player in players" :key="player.id" class="scoresheet__cell">
+        <tr v-for="scoreType in Object.keys(defaultScore)" :key="scoreType"
+            :class="`scoresheet__row scoresheet__row--${scoreType}`">
+          <td class="scoresheet__cell scoresheet__cell--first">
+            <span v-if="scoreType === 'armada'">
+              <img :src="getImgSrc('naval')" class="icon--score-type"/>
+              <img :src="getImgSrc('islands')" class="icon--score-type"/>
+            </span>
+            <span v-else-if="hasIconHeader.indexOf(scoreType) > -1">
+              <img :src="getImgSrc(scoreType)" class="icon--score-type"/>
+            </span>
+            <span v-else>
+              <div class="icon--score-type icon--card"></div>
+            </span>
+          </td>
+          <td v-for="(player, index) in players" :key="player.id"
+              class="scoresheet__cell" :class="{'scoresheet__cell--even': (index + 1) % 2 === 0}">
             <input type="text" v-model="scoreBoard[player.id].score[scoreType]"
               class="scoresheet__scorebox"
               :player="player.id"
@@ -24,7 +38,7 @@
           </td>
         </tr>
         <tr class="scoresheet__row scoresheet__row--total">
-          <td class="scoresheet__cell scoresheet__cell--first">Total</td>
+          <td class="scoresheet__cell scoresheet__cell--first">Σ</td>
           <td v-for="player in players" :key="player.id" class="scoresheet__cell">
             {{ scoreBoard[player.id].total || 0 }}
           </td>
@@ -44,12 +58,12 @@ export default {
       games: [],
       players: [
         {
-          id: uuidv4(),
-          name: 'Mew'
+          name: 'Mew',
+          id: uuidv4()
         },
         {
-          id: uuidv4(),
-          name: 'Woof'
+          name: 'Woof',
+          id: uuidv4()
         }
       ],
       defaultScore: {
@@ -61,9 +75,11 @@ export default {
         guilds: 0,
         science: 0,
         leader: 0,
-        city: 0
+        city: 0,
+        armada: 0
       },
-      scoreBoard: []
+      scoreBoard: [],
+      hasIconHeader: [ 'treasury', 'wonder', 'leader', 'armada' ]
     }
   },
   methods: {
@@ -99,7 +115,7 @@ export default {
     },
     addPlayer () {
       let newPlayerId = uuidv4()
-      let newPlayerName = 'Awoo'
+      let newPlayerName = `Player ${this.players.length + 1}`
 
       this.players.push({
         id: newPlayerId,
@@ -116,6 +132,10 @@ export default {
     },
     selectAllText (event) {
       event.target.setSelectionRange(0, event.target.value.length)
+    },
+    getImgSrc (iconName) {
+      let images = require.context('../assets/', false, /\.svg$/)
+      return images(`./icon-${iconName}.svg`)
     }
   },
   created () {
@@ -125,14 +145,147 @@ export default {
 </script>
 
 <style lang="scss" scoped>
- .header__namebox,
- .scoresheet__scorebox {
-   border: none;
-   text-align: center;
-   outline: none;
- }
+  $color-military: #aa191b;
+  $color-treasury: #fed766;
+  $color-wonder: #d7a671;
+  $color-civilian: #02669b;
+  $color-commercial: #fdca07;
+  $color-guilds: #744fa0;
+  $color-science: #00994f;
+  $color-black: #231f20;
+  $color-white: #fff;
 
- .button--add-player {
-   cursor: pointer;
- }
+  $font-size: 20px;
+  $column-width-max: 108px;
+
+  .scoreboard-wrapper {
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  .scoresheet {
+    border-collapse: collapse;
+    height: 100vh;
+  }
+
+  .scoresheet__cell {
+    padding: 0;
+    font-size: $font-size;
+    text-align: center;
+    max-width: $column-width-max;
+  }
+
+  .scoresheet__cell--player-name {
+    border-bottom: 4px double $color-black;
+  }
+
+  .header__namebox,
+  .scoresheet__scorebox {
+    border: none;
+    text-align: center;
+    outline: none;
+    background: transparent;
+    font-size: $font-size;
+    max-width: $column-width-max;
+  }
+
+  .header__namebox {
+    font-weight: 500;
+    padding: 12px 0;
+  }
+
+  .button--add-player {
+    cursor: pointer;
+  }
+
+  @mixin row-color ($color) {
+    background: rgba($color, .2);
+
+    .scoresheet__cell--even .scoresheet__scorebox {
+      background: rgba($color-black, .1);
+      width: 100%;
+      height: 100%;
+    }
+
+    .scoresheet__cell--first {
+      background: rgba($color, .7);
+
+      .icon--card {
+        background: $color;
+      }
+    }
+  }
+
+  .scoresheet__row--military {
+    @include row-color($color-military);
+  }
+
+  .scoresheet__row--treasury {
+    @include row-color($color-treasury);
+  }
+
+  .scoresheet__row--civilian {
+    @include row-color($color-civilian);
+  }
+
+  .scoresheet__row--commercial {
+    @include row-color($color-commercial);
+  }
+
+  .scoresheet__row--wonder {
+    @include row-color($color-wonder);
+  }
+
+  .scoresheet__row--guilds {
+    @include row-color($color-guilds);
+  }
+
+  .scoresheet__row--science {
+    @include row-color($color-science);
+  }
+
+  .scoresheet__row--leader {
+    @include row-color($color-white);
+  }
+
+  .scoresheet__row--armada {
+    @include row-color($color-civilian);
+
+    .scoresheet__cell--first {
+      background-color: #fff;
+    }
+  }
+
+  .scoresheet__row--city {
+    @include row-color($color-black);
+    background: rgba($color-black, .1);
+  }
+
+  .scoresheet__row--total {
+    background: rgba($color-black, .2);
+    border-top: 4px double $color-black;
+
+    .scoresheet__cell {
+      font-size: $font-size * 1.25;
+      font-weight: 600;
+    }
+
+    .scoresheet__cell--first {
+      background: $color-black;
+      color: #fff;
+      font-size: 36px;
+    }
+  }
+
+  .icon--score-type {
+    height: 48px;
+  }
+
+  .icon--card {
+    border: 2px solid #fff;
+    width: 28px;
+    border-radius: 4px;
+    margin: 0 auto;
+  }
+
 </style>
