@@ -9,7 +9,6 @@
             <input type="text" v-model="player.name" class="header__namebox"/>
           </th>
           <th v-if="players.length < 8"><a @click="addPlayer" class="button--add-player">+ Add player</a></th>
-          <!-- <th><a @click="addPlayer" class="button--save">Save</a></th> -->
         </tr>
       </thead>
       <tbody class="scoresheet">
