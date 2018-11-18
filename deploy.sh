@@ -19,9 +19,6 @@ MESSAGE="build_"$CURRENT_BRANCH"_"$TIMESTAMP
 # build the project
 yarn run build
 
-# revert the changes made to configuration files
-git reset --hard HEAD
-
 # switch to corresponding build branch
 git checkout $DEPLOY_BRANCH
 
