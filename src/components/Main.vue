@@ -38,8 +38,9 @@
         </tr>
         <tr class="scoresheet__row scoresheet__row--total">
           <td class="scoresheet__cell scoresheet__cell--first">Σ</td>
-          <td v-for="player in players" :key="player.id" class="scoresheet__cell">
-            {{ scoreBoard[player.id].total || 0 }}
+          <td v-for="(player, index) in players" :key="player.id"
+              class="scoresheet__cell" :class="{'scoresheet__cell--even': (index + 1) % 2 === 0}">
+            <animated-num :value="scoreBoard[player.id].total || 0"></animated-num>
           </td>
         </tr>
       </tbody>
@@ -50,8 +51,11 @@
 <script>
 import uuidv4 from 'uuid/v4'
 
+import AnimatedNum from '@/components/AnimatedNum'
+
 export default {
   name: 'Main',
+  components: { AnimatedNum },
   data () {
     return {
       games: [],
@@ -207,7 +211,7 @@ export default {
     }
 
     .scoresheet__cell--first {
-      background: rgba($color, .7);
+      background: rgba($color, .75);
 
       .icon--card {
         background: $color;
@@ -273,6 +277,10 @@ export default {
       background: $color-black;
       color: #fff;
       font-size: 36px;
+    }
+
+    .scoresheet__cell--even {
+      background: rgba($color-black, .25);
     }
   }
 
