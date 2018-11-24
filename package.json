@@ -11,11 +11,11 @@
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit",
     "build": "node build/build.js",
-    "deploy": "npm run build; push-dir --dir=dist --branch=gh-pages --cleanup"
+    "deploy": "./deploy.sh"
   },
   "dependencies": {
+    "gsap": "^2.0.2",
     "node-sass": "^4.10.0",
-    "push-dir": "^0.4.1",
     "sass-loader": "^7.1.0",
     "uuid": "^3.3.2",
     "vue": "^2.5.2",
