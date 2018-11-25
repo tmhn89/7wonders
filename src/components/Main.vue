@@ -29,11 +29,13 @@
           <td v-for="(player, index) in players" :key="player.id"
               class="scoresheet__cell" :class="{'scoresheet__cell--even': (index + 1) % 2 === 0}">
             <input type="text" v-model="scoreBoard[player.id].score[scoreType]"
-              class="scoresheet__scorebox"
-              :player="player.id"
-              :score-type="scoreType"
-              @focus="selectAllText"
-              @input="updateScore"/>
+                   class="scoresheet__scorebox"
+                   :player="player.id"
+                   :score-type="scoreType"
+                   @focus="selectAllText"
+                   @input="updateScore"/>
+            <v-icon v-if="scoreType === 'science'"
+                    class="button--science-help">help_outline</v-icon>
           </td>
         </tr>
         <tr class="scoresheet__row scoresheet__row--total">
@@ -163,7 +165,7 @@ export default {
 
   .scoreboard-wrapper {
     display: inline-block;
-    margin: 0 auto;
+    // margin: 0 auto;
   }
 
   .scoresheet {
@@ -176,6 +178,7 @@ export default {
     font-size: $font-size;
     text-align: center;
     max-width: $column-width-max;
+    position: relative;
   }
 
   .scoresheet__cell--player-name {
@@ -293,6 +296,21 @@ export default {
     width: 28px;
     border-radius: 4px;
     margin: 0 auto;
+  }
+
+  .button--science-help {
+    position: absolute;
+    cursor: pointer;
+    color: $color-science;
+    right: 6px;
+    bottom: 50%;
+    transform: translateY(50%);
+    opacity: 0;
+    transition: 0.25s ease-in-out;
+  }
+
+  .scoresheet__cell:hover .button--science-help {
+    opacity: 1;
   }
 
 </style>
