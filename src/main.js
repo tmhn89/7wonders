@@ -6,10 +6,14 @@ import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
 
+import 'vuetify/dist/vuetify.min.css'
+import '@fortawesome/fontawesome-free/css/all.css'
+
 Vue.config.productionTip = false
 
 Vue.use(Vuetify, {
-  iconfont: 'mdi'
+  // iconfont: 'mdi'
+  iconfont: 'fa'
 })
 
 /* eslint-disable no-new */

@@ -47,6 +47,8 @@
         </tr>
       </tbody>
     </table>
+    <science-calculator>
+    </science-calculator>
   </div>
 </template>
 
@@ -54,10 +56,11 @@
 import uuidv4 from 'uuid/v4'
 
 import AnimatedNum from '@/components/AnimatedNum'
+import ScienceCalculator from '@/components/ScienceCalculator'
 
 export default {
   name: 'Main',
-  components: { AnimatedNum },
+  components: { AnimatedNum, ScienceCalculator },
   data () {
     return {
       games: [],
